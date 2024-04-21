@@ -1,5 +1,5 @@
 use druid::{AppLauncher, LocalizedString, WindowDesc};
-use std::sync::Arc;
+use std::sync::{Arc};
 
 mod ui;
 mod structs;
@@ -45,7 +45,7 @@ fn main() {
         "item26".into(),
         "item27".into(),
         "item28".into(),
-        ];
+    ];
     let items_arc = Arc::new(items_vector);
 
     // create the initial app state (another kind of data to pass into the UI)
@@ -56,6 +56,7 @@ fn main() {
 
     // start the application
     AppLauncher::with_window(main_window)
+        .delegate(structs::Delegate)
         .configure_env(ui::init_fs_theme)
         .launch(initial_state)
         .expect("Failed to launch application");

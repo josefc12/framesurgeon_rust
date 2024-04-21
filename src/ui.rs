@@ -24,6 +24,7 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
     let txt = FileSpec::new("Text file", &["txt"]);
     let other = FileSpec::new("Bogus file", &["foo", "bar", "baz"]);
     let default_save_name = String::from("MyFile.txt");
+
     let save_dialog_options = FileDialogOptions::new()
         .allowed_types(vec![rs, txt, other])
         .default_type(txt)
@@ -31,9 +32,11 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
         .name_label("Target")
         .title("Choose a target for this lovely file")
         .button_text("Export");
+
     let open_dialog_options = save_dialog_options
         .clone()
         .default_name("MySavedFile.txt")
+        .multi_selection()
         .name_label("Source")
         .title("Where did you put that file?")
         .button_text("Import");
@@ -41,8 +44,10 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
     
     let button_load = Button::new("Load frames")
         .on_click(move |ctx, _, _| {
-            ctx.submit_command(druid::commands::SHOW_OPEN_PANEL.with(open_dialog_options.clone()))
+            let command = druid::commands::SHOW_OPEN_PANEL.with(open_dialog_options.clone());
+            ctx.submit_command(command);
         });
+    
     //let button_export = Button::new("Export");
 
     let header_flex = Flex::row().with_child(button_load);
