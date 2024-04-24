@@ -1,10 +1,11 @@
 use druid::{Data,Lens, AppDelegate, DelegateCtx, Target, Command, Env, Handled, commands,};
-use std::sync::{Arc};
+use std::sync::Arc;
+use crate::process_frames;
 
 #[derive(Clone, Data, Lens)]
 pub struct DefaultState {
     pub name: String,
-    pub items: Arc<Vec<String>>
+    pub items: Arc<Vec<String>>,
 }
 
 pub struct Delegate;
@@ -18,14 +19,14 @@ impl AppDelegate<DefaultState> for Delegate {
         data: &mut DefaultState,
         _env: &Env,
     ) -> Handled {
-        /*
+        
         if let Some(file_info) = cmd.get(commands::SAVE_FILE_AS) {
-            if let Err(e) = std::fs::write(file_info.path(), &data[..]) {
-                println!("Error writing file: {e}");
+            if let Err(err) = process_frames::process(file_info.path().display().to_string()) {
+                println!("Error processing image: {}", err);
             }
             return Handled::Yes;
         }
-        */
+        
 
         if let Some(files) = cmd.get(commands::OPEN_FILES) {
             let mut items_vector: Vec<String> = vec![];
@@ -36,16 +37,6 @@ impl AppDelegate<DefaultState> for Delegate {
             }
             data.items = Arc::new(items_vector);
 
-            /*
-            match std::fs::read_to_string(file_info.path()) {
-                Ok(_s) => {
-                    println!("Files: {}", file_info.path().display().to_string());
-                }
-                Err(e) => {
-                    println!("Error opening file: {e}");
-                }
-            }
-            */
             return Handled::Yes;
 
         }

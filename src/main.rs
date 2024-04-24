@@ -1,21 +1,27 @@
 use druid::{AppLauncher, LocalizedString, WindowDesc};
-use std::sync::{Arc};
+use std::sync::Arc;
+//use image::io::{Reader as ImageReader};
 
 mod ui;
 mod structs;
+mod process_frames;
 
 const WINDOW_TITLE: LocalizedString<structs::DefaultState> = LocalizedString::new("Frame Surgeon 2");
 
 
 
 fn main() {
+    //TEMP IMAGE FOR EXPORT TESTING
+    //let img = ImageReader::open("images/0001.png")?.decode()?;
+    //TEMP IMAGE FOR EXPORT TESTING
+
+
     // describe the main window
     let main_window = WindowDesc::new(ui::build_root_widget())
         .title(WINDOW_TITLE)
         .window_size((ui::ROOT_WIDTH, ui::ROOT_HEIGHT))
         .resizable(true);
-
-
+    
     let items_vector: Vec<String> = vec![
         "item1".into(),
         "item2".into(),
@@ -51,7 +57,7 @@ fn main() {
     // create the initial app state (another kind of data to pass into the UI)
     let initial_state = structs::DefaultState {
         name: "World".into(),
-        items: items_arc
+        items: items_arc,
     };
 
     // start the application

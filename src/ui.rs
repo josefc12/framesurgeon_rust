@@ -19,28 +19,24 @@ const BLOCK_IN: druid::Color = Color::rgb8(24,24,24);
 
 pub fn build_root_widget() -> impl Widget<DefaultState> {
 
-    //THIS IS LITERALLY JUST COPIED FROM THE DOCS ----
-    let rs = FileSpec::new("Rust source", &["rs"]);
-    let txt = FileSpec::new("Text file", &["txt"]);
-    let other = FileSpec::new("Bogus file", &["foo", "bar", "baz"]);
-    let default_save_name = String::from("MyFile.txt");
+    let image_spec = FileSpec::new("Image files", &["bmp", "gif", "ico", "jpeg", "jpg", "png", "tga"]);
+    let default_save_name = String::from("MyFlipbook.tga");
 
     let save_dialog_options = FileDialogOptions::new()
-        .allowed_types(vec![rs, txt, other])
-        .default_type(txt)
+        .allowed_types(vec![image_spec])
+        .default_type(image_spec)
         .default_name(default_save_name)
         .name_label("Target")
-        .title("Choose a target for this lovely file")
+        .title("Export")
         .button_text("Export");
 
     let open_dialog_options = save_dialog_options
         .clone()
-        .default_name("MySavedFile.txt")
+        .default_name("MySavedFlipbook.tga")
         .multi_selection()
         .name_label("Source")
-        .title("Where did you put that file?")
+        .title("Load frames")
         .button_text("Import");
-    //THIS IS LITERALLY JUST COPIED FROM THE DOCS ----
     
     let button_load = Button::new("Load frames")
         .on_click(move |ctx, _, _| {
@@ -48,15 +44,19 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
             ctx.submit_command(command);
         });
     
-    //let button_export = Button::new("Export");
+    let button_export = Button::new("Export")
+        .on_click(move |ctx, _, _| {
+            let command = druid::commands::SHOW_SAVE_PANEL.with(save_dialog_options.clone());
+            ctx.submit_command(command);
+        });
 
     let header_flex = Flex::row().with_child(button_load);
-    //let footer_flex = Align::right(Flex::row());
+    let footer_flex = Align::right(Flex::row().with_child(button_export));
     
     // center the two widgets in the available space
     let header = Container::new(SizedBox::new(header_flex).expand_width().height(24.0).padding((4.0,0.0)))
         .background(DARK_DEEP);
-    let footer = Container::new(SizedBox::empty().expand_width().height(24.0).padding((4.0,0.0)))
+    let footer = Container::new(SizedBox::new(footer_flex).expand_width().height(24.0).padding((4.0,0.0)))
     .background(DARK_DEEP);
     
 
