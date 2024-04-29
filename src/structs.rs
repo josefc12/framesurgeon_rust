@@ -21,9 +21,7 @@ impl AppDelegate<DefaultState> for Delegate {
     ) -> Handled {
         
         if let Some(file_info) = cmd.get(commands::SAVE_FILE_AS) {
-            if let Err(err) = process_frames::process(file_info.path().display().to_string()) {
-                println!("Error processing image: {}", err);
-            }
+            process_frames::process(file_info.path().display().to_string(), data);
             return Handled::Yes;
         }
         

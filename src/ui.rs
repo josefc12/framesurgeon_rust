@@ -63,14 +63,15 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
     //Scroller.
     let frame_scroller = 
         Scroll::new(
+            Padding::new(4.0,
                 List::new(|| {
                     Label::new(|item: &String, _env: &_| item.clone()).with_text_size(14.0)
-                        .padding(5.0)
                         .expand_width()
                         .height(20.0)
                         .align_left()
                     }
                 ).lens(DefaultState::items)
+            )
         )
         .vertical()
         .background(BLOCK_IN)

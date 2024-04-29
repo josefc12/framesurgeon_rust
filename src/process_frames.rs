@@ -1,13 +1,15 @@
-use image::{io::Reader as ImageReader, ImageError};
+use image::io::Reader as ImageReader;
 
-pub fn process(path: String) -> Result<(), ImageError> {
-    let img = match ImageReader::open("images/0001.png") {
-        Ok(reader) => reader.decode(),
-        Err(err) => return Err(ImageError::IoError(err)),
-    }?;
+use crate::structs::DefaultState;
 
-    match img.save(path) {
-        Ok(()) => Ok(()),
-        Err(err) => Err(err),
+pub fn process(path: String, data: &mut DefaultState) {
+
+    for pather in data.items.iter() {
+        println!("{}",pather)
     }
+
+    let img_attempt = ImageReader::open("images/0001.png");
+    let img = img_attempt.unwrap().decode().unwrap();
+    img.save(path).expect("image couldn't have been saved");
+
 }
