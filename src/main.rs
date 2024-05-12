@@ -58,6 +58,14 @@ fn main() {
     let initial_state = structs::DefaultState {
         name: "World".into(),
         items: items_arc,
+        frame_counter: 0,
+        fb_horizontal_default: 0,
+        fb_vertical_default: 0,
+        frame_size_default: 0,
+        fb_horizontal: 0,
+        fb_vertical: 0,
+        frame_size: 0,
+        
     };
 
     // start the application
