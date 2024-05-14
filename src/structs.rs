@@ -15,6 +15,7 @@ pub struct DefaultState {
     pub fb_horizontal: u32,
     pub fb_vertical: u32,
     pub frame_size: u32,
+    pub path: String
 }
 
 pub struct NumberFormatter;
@@ -60,6 +61,7 @@ impl AppDelegate<DefaultState> for Delegate {
         
         if let Some(file_info) = cmd.get(commands::SAVE_FILE_AS) {
             process_frames::process(file_info.path().display().to_string(), data);
+            data.path = file_info.path().display().to_string();
             return Handled::Yes;
         }
         

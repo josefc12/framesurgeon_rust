@@ -4,6 +4,7 @@ use druid::theme::{self};
 
 use crate::structs::DefaultState;
 use crate::structs::NumberFormatter;
+use crate::process_frames;
 
 pub const _VERTICAL_WIDGET_SPACING: f64 = 20.0;
 pub const _TEXT_BOX_WIDTH: f64 = 200.0;
@@ -39,6 +40,8 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
         .title("Load frames")
         .button_text("Import");
     
+    let save_dialog_options_change = save_dialog_options.clone();
+
     let button_load = Button::new("Load frames")
         .on_click(move |ctx, _, _| {
             let command = druid::commands::SHOW_OPEN_PANEL.with(open_dialog_options.clone());
@@ -46,11 +49,23 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
         });
     
     let button_export = Button::new("Export")
-        .on_click(move |ctx, _, _| {
-            let command = druid::commands::SHOW_SAVE_PANEL.with(save_dialog_options.clone());
-            ctx.submit_command(command);
-        });
+        .on_click(move |ctx, data: &mut DefaultState, _| {
+            if data.path == "" || data.path == "none" {
+                let command = druid::commands::SHOW_SAVE_PANEL.with(save_dialog_options.clone());
+                ctx.submit_command(command);
+            } else {
+                process_frames::process(data.path.clone(), data);
+            }
+        })
+        .disabled_if(|data: &DefaultState, _| if data.items[0].to_string() == "No frames loaded" || data.items.len() == 0 {true} else {false});
     
+    let button_change_path = Button::new("wth")
+        .on_click(move |ctx, _data: &mut DefaultState, _| {
+            let command = druid::commands::SHOW_SAVE_PANEL.with(save_dialog_options_change.clone());
+            ctx.submit_command(command);
+        })
+        .disabled_if(|data: &DefaultState, _| if data.path == "" || data.path == "none" {true} else {false});
+
     let setting_fb_reset = Button::from_label(Label::new("R").with_text_size(12.0)).fix_height(24.0).fix_width(28.0)
         .on_click(move |_ctx, data: &mut DefaultState, _| {
             data.fb_horizontal = data.fb_horizontal_default;
@@ -75,7 +90,23 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
     });
     
     let header_flex = Flex::row().with_child(button_load);
-    let footer_flex = Align::right(Flex::row().with_child(button_export));
+    let footer_flex = Container::new(
+        Flex::row()
+            .with_flex_child(
+                Flex::column()
+                    .with_child(Label::new("Last path:").with_text_color(TEXT_EMBEDDED).with_text_size(9.0).align_left())
+                    .with_child(Label::dynamic(|item: &String, _env: &_| item.clone()).with_text_color(TEXT_EMBEDDED).with_text_size(9.0).align_left().lens(DefaultState::path))
+                    
+            ,1.0)
+            .with_flex_child(
+                Flex::row()
+                    .with_child(button_change_path)
+                    .with_spacer(2.0)
+                    .with_child(button_export)
+                    .align_right()
+                    
+            ,1.0)
+    );
     
     // center the two widgets in the available space
     let header = Container::new(SizedBox::new(header_flex).expand_width().height(24.0).padding((4.0,0.0)))
