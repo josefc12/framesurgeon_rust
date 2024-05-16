@@ -15,7 +15,15 @@ pub struct DefaultState {
     pub fb_horizontal: u32,
     pub fb_vertical: u32,
     pub frame_size: u32,
-    pub path: String
+    pub path: String,
+    pub mode: ProcessMode,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Data)]
+pub enum ProcessMode {
+    Flipbook,
+    Convert,
+    AnimatedGif,
 }
 
 pub struct NumberFormatter;

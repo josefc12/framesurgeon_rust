@@ -1,9 +1,10 @@
-use druid::widget::{Align, Button, Container, Flex, Label, List, Padding, Scroll, SizedBox, TextBox, ValueTextBox};
+use druid::widget::{Align, Button, Container, Flex, Label, List, Padding, Scroll, SizedBox, TextBox, ValueTextBox,RadioGroup};
 use druid::{Color, Env, Widget, WidgetExt, FileSpec,FileDialogOptions};
 use druid::theme::{self};
 
 use crate::structs::DefaultState;
 use crate::structs::NumberFormatter;
+use crate::structs::ProcessMode;
 use crate::process_frames;
 
 pub const _VERTICAL_WIDGET_SPACING: f64 = 20.0;
@@ -88,6 +89,12 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
     .on_click(move |_ctx, data: &mut DefaultState, _| {
         data.frame_size = data.frame_size / 8;
     });
+
+    let mode_radio_group = RadioGroup::column(vec![
+        ("Flipbook", ProcessMode::Flipbook, 12.0, 12.0),
+        ("Convert", ProcessMode::Convert, 12.0, 12.0),
+        ("Animated GIF", ProcessMode::AnimatedGif, 12.0, 12.0),
+    ]).lens(DefaultState::mode);
     
     let header_flex = Flex::row().with_child(button_load);
     let footer_flex = Container::new(
@@ -158,6 +165,16 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
     //Container that holds the list with the scroller list as its child
     let root_frame_list = SizedBox::new(frame_list);
     
+    let setting_mode = Container::new(Flex::column()
+        .with_child(Label::new("Process").with_text_color(TEXT_EMBEDDED).with_text_size(12.0).align_left())
+        .with_spacer(6.0)
+        .with_child(Padding::new(2.0,mode_radio_group.align_left()))
+        .with_spacer(4.0)
+        
+    )
+    .padding(4.0)
+    .background(BLOCK_IN)
+    .rounded(ROUNDED_RADIUS);
 
     let setting_fb_size = Container::new(Flex::column()
         .with_child(Label::new("Flipbook size").with_text_color(TEXT_EMBEDDED).with_text_size(12.0).align_left())
@@ -241,6 +258,8 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
         Container::new(Flex::column()
             .with_spacer(4.0)
             .with_child(Align::left(Label::new("Settings").with_text_color(TEXT_EMBEDDED).with_text_size(12.0)))
+            .with_spacer(6.0)
+            .with_child(setting_mode)
             .with_spacer(6.0)
             .with_flex_child(setting_fb_size,1.0)
             .with_spacer(6.0)

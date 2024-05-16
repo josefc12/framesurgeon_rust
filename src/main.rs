@@ -37,6 +37,7 @@ fn main() {
         fb_vertical: 0,
         frame_size: 0,
         path: "none".into(),
+        mode: structs::ProcessMode::Flipbook
     };
 
     // start the application
