@@ -91,9 +91,9 @@ pub fn build_root_widget() -> impl Widget<DefaultState> {
     });
 
     let mode_radio_group = RadioGroup::column(vec![
-        ("Flipbook", ProcessMode::Flipbook, 12.0, 12.0),
-        ("Convert", ProcessMode::Convert, 12.0, 12.0),
-        ("Animated GIF", ProcessMode::AnimatedGif, 12.0, 12.0),
+        ("Flipbook", ProcessMode::Flipbook, 12.0, 6.0),
+        ("Convert", ProcessMode::Convert, 12.0, 6.0),
+        ("Animated GIF", ProcessMode::AnimatedGif, 12.0, 6.0),
     ]).lens(DefaultState::mode);
     
     let header_flex = Flex::row().with_child(button_load);
