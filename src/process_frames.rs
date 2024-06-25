@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use image::io::Reader as ImageReader;
 use image::RgbaImage;
 use image::imageops::{replace, FilterType};
@@ -5,13 +6,48 @@ use image::imageops::{replace, FilterType};
 use crate::structs::State;
 
 
-pub fn process(path: String, data: &mut State) {
+pub fn process(path: PathBuf, in_frames_horizontal: Option<i32>, in_frames_vertical: Option<i32>, in_frame_width: Option<i32>, in_frame_height: Option<i32> ) {
 
+    let frames_horizontal: i32 = match in_frames_horizontal {
+        None => {
+            //TODO: Calculate automatic horizontal frame amount
+            32
+        },
+        Some(value) => {
+            value
+        }
+    };
 
-    if data.fb_horizontal == 0 {data.fb_horizontal = data.fb_horizontal_default}
-    if data.fb_vertical == 0 {data.fb_vertical = data.fb_vertical_default}
-    if data.frame_size == 0 {data.frame_size = data.frame_size_default}
+    let frames_vertical: i32 = match in_frames_vertical {
+        None => {
+            //TODO: Calculate automatic horizontal frame amount
+            32
+        },
+        Some(value) => {
+            value
+        }
+    };
 
+    let frame_width: i32 = match in_frame_width {
+        None => {
+            //TODO: Calculate automatic horizontal frame amount
+            256
+        },
+        Some(value) => {
+            value
+        }
+    };
+
+    let frame_height: i32 = match in_frame_height {
+        None => {
+            //TODO: Calculate automatic horizontal frame amount
+            256
+        },
+        Some(value) => {
+            value
+        }
+    };
+    
     let final_dimension = data.frame_size * data.fb_horizontal as u32;
 
     //This currently sets the canvas to be a square.

@@ -1,8 +1,10 @@
-use std::sync::Arc;
+
 use clap::Parser;
 
 #[derive(Clone)]
 pub struct State {
+
+    /*
     pub name: String,
     pub items: Arc<Vec<String>>,
     pub frame_counter: i32,
@@ -14,6 +16,7 @@ pub struct State {
     pub frame_size: u32,
     pub path: String,
     pub mode: ProcessMode,
+    */
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -25,6 +28,9 @@ pub enum ProcessMode {
 
 #[derive(Parser)]
 pub struct CliInput {
-    pub pattern: String,
-    pub path: std::path::PathBuf,
+    pub input_path: std::path::PathBuf,
+    pub horizontal_frame_amount: Option<i32>,
+    pub vertical_frame_amount: Option<i32>, 
+    pub frame_width: Option<i32>,
+    pub frame_height: Option<i32>
 }
