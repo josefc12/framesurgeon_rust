@@ -1,17 +1,18 @@
 use std::path::PathBuf;
+use std::fs;
 use image::io::Reader as ImageReader;
 use image::RgbaImage;
 use image::imageops::{replace, FilterType};
 
 use crate::structs::State;
 
-
 pub fn process(path: PathBuf, in_frames_horizontal: Option<i32>, in_frames_vertical: Option<i32>, in_frame_width: Option<i32>, in_frame_height: Option<i32> ) {
+
+    let frame_count = fs::read_dir(&path).unwrap().count() as i32;
 
     let frames_horizontal: i32 = match in_frames_horizontal {
         None => {
-            //TODO: Calculate automatic horizontal frame amount
-            32
+            get_default_dimension(&frame_count)
         },
         Some(value) => {
             value
@@ -20,8 +21,7 @@ pub fn process(path: PathBuf, in_frames_horizontal: Option<i32>, in_frames_verti
 
     let frames_vertical: i32 = match in_frames_vertical {
         None => {
-            //TODO: Calculate automatic horizontal frame amount
-            32
+            get_default_dimension(&frame_count)
         },
         Some(value) => {
             value
@@ -84,18 +84,12 @@ pub fn process(path: PathBuf, in_frames_horizontal: Option<i32>, in_frames_verti
 
 }
 
-pub fn set_default_fb_dimensions(frame_count: i32, data: &mut State) {
-    let multiplicator = (frame_count as f64).sqrt().ceil() as u32;
-    data.fb_horizontal_default = multiplicator;
-    data.fb_vertical_default = multiplicator;
-
-    //Initialize the variable size by the default sizes
-    data.fb_horizontal = data.fb_horizontal_default;
-    data.fb_vertical = data.fb_vertical_default;
-
+fn get_default_dimension(frame_count: &i32) -> i32 {
+    let frame_count = frame_count.clone() as f64;
+    return frame_count.sqrt().ceil() as i32;
 }
 
-pub fn set_default_frame_size(data: &mut State) {
+pub fn get_default_scale(model_frame: &) {
     let first_frame = ImageReader::open(data.items[0].clone());
     let first_frame = first_frame.unwrap().decode().unwrap();
 
