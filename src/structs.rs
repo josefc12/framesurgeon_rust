@@ -29,8 +29,8 @@ pub enum ProcessMode {
 #[derive(Parser)]
 pub struct CliInput {
     pub input_path: std::path::PathBuf,
-    pub horizontal_frame_amount: Option<i32>,
-    pub vertical_frame_amount: Option<i32>, 
-    pub frame_width: Option<i32>,
-    pub frame_height: Option<i32>
+    pub horizontal_frame_amount: Option<u32>,
+    pub vertical_frame_amount: Option<u32>, 
+    pub frame_width: Option<u32>,
+    pub frame_height: Option<u32>
 }
