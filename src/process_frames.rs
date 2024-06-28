@@ -1,4 +1,5 @@
 
+
 use std::cell::RefCell;
 use std::path::PathBuf;
 use std::fs;
@@ -13,8 +14,12 @@ pub fn process(path: PathBuf, in_frames_horizontal: Option<u32>, in_frames_verti
 
     let image_paths: Arc<RefCell<Vec<PathBuf>>> = Arc::new(RefCell::new(vec![]));
     for path in fs::read_dir(&path).unwrap(){
-        image_paths.borrow_mut().push(path.unwrap().path())
+        let path = path.unwrap();
+        println!("path: {}", &path.path().display());
+
+        image_paths.borrow_mut().push(path.path());
     }
+    image_paths.borrow_mut().sort();
 
     let frame_count = fs::read_dir(&path).unwrap().count() as u32;
     println!("initial frame count: {}", frame_count);
@@ -60,13 +65,9 @@ pub fn process(path: PathBuf, in_frames_horizontal: Option<u32>, in_frames_verti
     
     //the scale of an image * the amount of images gives the length of one side
     let final_dimension: u32 = &frame_width * &frames_horizontal;
-    println!("final dimension was: {}", final_dimension);
+
     //This currently sets the canvas to be a square.
     let mut img_canvas = RgbaImage::new(final_dimension, final_dimension);
-    println!("amount of horizontal images: {}", frames_horizontal);
-    println!("size of model image in pixels: {} x {}", model_frame.width(), model_frame.height());
-    println!("canvas size in pixels: {} x {}", img_canvas.width(), img_canvas.height());
-
     
     //Loop through the canvas and replace its pixels at particular location with the image loaded in first_frame.
     let mut frame_index: u32 = 0;
@@ -98,17 +99,15 @@ pub fn process(path: PathBuf, in_frames_horizontal: Option<u32>, in_frames_verti
     }
 
     let mut output_path:PathBuf = path.clone();
-    output_path.push("/new_image.png");
-    img_canvas.save(output_path).expect("image couldn't have been saved");
-    
+    println!("output path is: {}", output_path.display());
+    output_path.push("new_image.png");
+    img_canvas.save(&output_path).expect("image couldn't have been saved");
+   
 
 }
 
 fn get_default_dimension(frame_count: &u32) -> u32 {
     let frame_count = frame_count.clone() as f64;
-    println!("frame count as f64: {}", frame_count);
-    println!("frame count ceiled: {}", frame_count.sqrt().ceil());
-    println!("frame count ceiled as u32: {}", frame_count.sqrt().ceil() as u32);
     return frame_count.sqrt().ceil() as u32;
 }
 
